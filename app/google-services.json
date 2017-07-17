@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "784406000080",
+    "firebase_url": "https://testprojects-17691.firebaseio.com",
+    "project_id": "testprojects-17691",
+    "storage_bucket": "testprojects-17691.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:784406000080:android:68e872bcc6e57800",
+        "android_client_info": {
+          "package_name": "powerise.phoneauthentication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "784406000080-pgrblpud40orgv07d2voaic8mo0ontd4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxcflSBw7_mFjRzjz8xmflPaO-KP2l_-U"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
