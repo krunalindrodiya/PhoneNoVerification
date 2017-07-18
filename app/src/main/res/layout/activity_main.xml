@@ -20,8 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Mobile number"
-            android:inputType="phone"
-            android:text="9408686222" />
+            android:inputType="phone" />
 
     </android.support.design.widget.TextInputLayout>
 
