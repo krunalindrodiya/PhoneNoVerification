@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.credentials.Credential
 import com.google.android.gms.auth.api.credentials.HintRequest
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity() {
 
     private var isVerification = false
     private var phoneAuthCredential: PhoneAuthCredential? = null
+    private var verificationId: String? = null
     private val RESOLVE_HINT: Int = 10
     private val TAG = "MainActivity"
 
@@ -50,6 +52,19 @@ class MainActivity : AppCompatActivity() {
             }
 
             if (isVerification) {
+
+                if (phoneAuthCredential == null && !verificationId.isNullOrEmpty()) {
+                    val code = input_code.text.toString()
+                    if (!code.isNullOrEmpty()) {
+                        val credential = verificationId?.let { PhoneAuthProvider.getCredential(it, input_code.toString()) }
+
+                        credential?.let { signInWithPhoneAuthCredential(it) }
+                    } else {
+                        Snackbar.make(view, "Please enter OTP", Snackbar.LENGTH_LONG).show()
+                    }
+
+                }
+
                 phoneAuthCredential?.let { phoneAuthCredential ->
                     val code = input_code.text.toString()
                     if (code == phoneAuthCredential.smsCode) {
@@ -105,34 +120,7 @@ class MainActivity : AppCompatActivity() {
                 phoneNumber, // Phone number to verify
                 60, // Timeout duration
                 TimeUnit.SECONDS, // Unit of timeout
-                this, // Activity (for callback binding)
-                /*object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                    override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential?) {
-
-                        Log.d("MainActivity", "Phone Authentication=" + phoneAuthCredential)
-                        Log.d("MainActivity", "SMS=" + phoneAuthCredential?.smsCode)
-
-//                        phoneAuthCredential?.let { signInWithPhoneAuthCredential(it) }
-
-                        if (phoneAuthCredential != null) {
-                            this@MainActivity.phoneAuthCredential = phoneAuthCredential
-                            Snackbar.make(submit, "Please enter verification code, received by sms.", Snackbar.LENGTH_LONG).show()
-                            isVerification = true
-                            input_code.visibility = View.VISIBLE
-                            progressBar.visibility = View.GONE
-                            input_phone.isEnabled = false
-                        } else {
-                            Snackbar.make(submit, "Server error or network busy.", Snackbar.LENGTH_INDEFINITE).show()
-                        }
-                    }
-
-                    override fun onVerificationFailed(p0: FirebaseException?) {
-                        Log.d("MainActivity", "FirebaseException=" + p0)
-                        Snackbar.make(input_phone, "Phone number authentication fail.", Snackbar.LENGTH_LONG).show()
-                    }
-
-                }*/mCallbacks)
-
+                this, mCallbacks)
     }
 
     private val mCallbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -170,9 +158,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        override fun onCodeSent(verificationId: String?,
+        override fun onCodeSent(verifiId: String?,
                                 token: PhoneAuthProvider.ForceResendingToken?) {
-            Log.d(TAG, "onCodeSent")
+            verificationId = verifiId
+
+            Snackbar.make(submit, "Please enter verification code, received by sms.", Snackbar.LENGTH_LONG).show()
+            isVerification = true
+            input_code.visibility = View.VISIBLE
+            progressBar.visibility = View.GONE
+            input_phone.isEnabled = false
+
             Log.d(TAG, "verificationId $verificationId")
         }
     }
@@ -187,6 +182,9 @@ class MainActivity : AppCompatActivity() {
                         Log.d("MainActivity", "signInWithCredential:success")
 
                         val user = task.result.user
+                        Log.d("MainActivity", "User detail $user")
+
+                        Toast.makeText(this, "Sign in successfully", Toast.LENGTH_LONG).show()
                         // ...
                     } else {
                         // Sign in failed, display a message and update the UI
